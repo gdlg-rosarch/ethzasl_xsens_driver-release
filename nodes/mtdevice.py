@@ -285,8 +285,8 @@ class MTDevice(object):
         """Get the option flags (MTi-1 series)."""
         self._ensure_config_state()
         data = self.write_ack(MID.SetOptionFlags)
-        set_flags, clear_flags = struct.unpack('!II', data)
-        return set_flags, clear_flags
+        flags, = struct.unpack('!I', data)
+        return flags
 
     def SetOptionFlags(self, set_flags, clear_flags):
         """Set the option flags (MTi-1 series)."""
@@ -752,7 +752,7 @@ class MTDevice(object):
                     o['velE'], o['velD'], o['gSpeed'], o['headMot'], o['sAcc'],\
                     o['headAcc'], o['headVeh'], o['gdop'], o['pdop'],\
                     o['tdop'], o['vdop'], o['hdop'], o['ndop'], o['edop'] = \
-                    struct.unpack('!IHBBBBBBIiBBBBiiiiIIiiiiiIIiHHHHHHH',
+                    struct.unpack('!IHBBBBBBIiBBBxiiiiIIiiiiiIIiHHHHHHH',
                                   content)
                 # scaling correction
                 o['lon'] *= 1e-7
@@ -764,7 +764,7 @@ class MTDevice(object):
                 o['tdop'] *= 0.01
                 o['vdop'] *= 0.01
                 o['hdop'] *= 0.01
-                o['bdop'] *= 0.01
+                o['ndop'] *= 0.01
                 o['edop'] *= 0.01
             elif (data_id & 0x00F0) == 0x20:  # GNSS satellites info
                 o['iTOW'], o['numSvs'] = struct.unpack('!LBxxx', content[:8])
@@ -1517,7 +1517,7 @@ def inspect(mt, device, baudrate):
     try_message("firmware revision:", mt.GetFirmwareRev)
     try_message("baudrate:", mt.GetBaudrate)
     try_message("error mode:", mt.GetErrorMode, hex_fmt(2))
-    try_message("option flags:", mt.GetOptionFlags, hex_fmt(8))
+    try_message("option flags:", mt.GetOptionFlags, hex_fmt(4))
     try_message("location ID:", mt.GetLocationID, hex_fmt(2))
     try_message("transmit delay:", mt.GetTransmitDelay)
     try_message("synchronization settings:", mt.GetSyncSettings, sync_fmt)
