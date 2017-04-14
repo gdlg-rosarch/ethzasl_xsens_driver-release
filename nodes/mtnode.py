@@ -58,6 +58,15 @@ class XSensDriver(object):
         rospy.loginfo("MT node interface: %s at %d bd." % (device, baudrate))
         self.mt = mtdevice.MTDevice(device, baudrate, timeout)
 
+        # optional no rotation procedure for internal calibration of biases
+        # (only mark iv devices)
+        no_rotation_duration = get_param('~no_rotation_duration', 0)
+        if no_rotation_duration:
+            rospy.loginfo("Starting the no-rotation procedure to estimate the "
+                          "gyroscope biases for %d s. Please don't move the IMU"
+                          " during this time." % no_rotation_duration)
+            self.mt.SetNoRotation(no_rotation_duration)
+
         self.frame_id = get_param('~frame_id', '/base_imu')
 
         self.frame_local = get_param('~frame_local', 'ENU')
@@ -501,10 +510,10 @@ class XSensDriver(object):
                 # flags
                 fixtype = o['fixtype']
                 if fixtype == 0x00:
-                    self.gps_msg.status = NavSatStatus.STATUS_NO_FIX  # no fix
+                    self.gps_msg.status.status = NavSatStatus.STATUS_NO_FIX  # no fix
                     self.gps_msg.status.service = 0
                 else:
-                    self.gps_msg.status = NavSatStatus.STATUS_FIX  # unaugmented
+                    self.gps_msg.status.status = NavSatStatus.STATUS_FIX  # unaugmented
                     self.gps_msg.status.service = NavSatStatus.SERVICE_GPS
                 # lat lon alt
                 self.gps_msg.latitude = o['lat']
@@ -681,12 +690,12 @@ class XSensDriver(object):
                                                  queue_size=10)
             self.press_pub.publish(self.press_msg)
         if self.pub_anin1:
-            if self.pub_analog_in1_pub is None:
+            if self.analog_in1_pub is None:
                 self.analog_in1_pub = rospy.Publisher('analog_in1',
                                                       UInt16, queue_size=10)
             self.analog_in1_pub.publish(self.anin1_msg)
         if self.pub_anin2:
-            if self.pub_analog_in2_pub is None:
+            if self.analog_in2_pub is None:
                 self.analog_in2_pub = rospy.Publisher('analog_in2', UInt16,
                                                       queue_size=10)
             self.analog_in2_pub.publish(self.anin2_msg)
