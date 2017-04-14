@@ -1,3 +1,26 @@
+## xsens_driver (kinetic) - 2.1.0-0
+
+The packages in the `xsens_driver` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release xsens_driver --track kinetic --rosdistro kinetic` on `Fri, 14 Apr 2017 13:56:52 -0000`
+
+The `xsens_driver` package was released.
+
+Version of package(s) in repository `xsens_driver`:
+
+- upstream repository: https://github.com/ethz-asl/ethzasl_xsens_driver.git
+- release repository: https://github.com/ethz-asl/ethzasl_xsens_driver-release.git
+- rosdistro version: `2.0.1-0`
+- old version: `2.0.1-0`
+- new version: `2.1.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.23`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.5.0`
+- vcstools version: `0.1.39`
+
+
 ## xsens_driver (jade) - 2.1.0-0
 
 The packages in the `xsens_driver` repository were released into the `jade` distro by running `/usr/bin/bloom-release xsens_driver --track jade --rosdistro jade` on `Fri, 14 Apr 2017 13:52:59 -0000`
